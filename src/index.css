@@ -1,111 +1,414 @@
+/* =====================================================================
+   ESTILOS DEL JUEGO — temática "correo aéreo / atlas viejo"
+   - Fondo azul tinta con una cuadrícula de mapa que se mueve sola
+   - La tarjeta del juego es un sobre de correo aéreo (bordes a rayas)
+   - La bandera es una postal que se balancea
+   ===================================================================== */
+
+/* Tipografías de Google Fonts:
+   Fraunces = títulos con estilo, Space Grotesk = textos, Space Mono = números */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,600&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@700&display=swap');
+
+/* ---------- Colores (se usan como variables en todo el archivo) ---------- */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --tinta: #13233a; /* azul oscuro del fondo */
+  --papel: #f6efdf; /* crema de la tarjeta */
+  --tomate: #e4572e; /* rojo de acento */
+  --mostaza: #f2c14e; /* amarillo de acento */
+  --marino: #1d4e89; /* azul de las rayas del sobre */
+  --verde: #2a9d8f;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+* {
   box-sizing: border-box;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+/* ---------- Fondo de la página ---------- */
+body {
   margin: 0;
+  min-height: 100vh;
+  /* display grid + place-items centra la tarjeta en la pantalla */
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--tinta);
+  background-color: var(--tinta);
+  /* Cuadrícula tipo mapa (meridianos y paralelos) + un brillo en el centro */
+  background-image:
+    radial-gradient(circle at 50% 40%, rgba(242, 193, 78, 0.12), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 64px);
+  /* La cuadrícula se desplaza despacito para dar movimiento */
+  animation: deriva 40s linear infinite;
+  overflow-x: hidden;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+@keyframes deriva {
+  to {
+    background-position: 0 0, 640px 320px, 640px 320px;
+  }
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* Un "globo" gigante punteado que gira detrás de todo */
+body::before {
+  content: '';
+  position: fixed;
+  width: 130vmin;
+  height: 130vmin;
+  top: 50%;
+  left: 50%;
+  margin: -65vmin 0 0 -65vmin;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.08);
+  background: repeating-radial-gradient(circle, transparent 0 60px, rgba(255, 255, 255, 0.03) 60px 61px);
+  animation: girar 120s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* #root queda por encima del globo */
+#root {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ---------- La tarjeta: un sobre de correo aéreo ---------- */
+main {
+  position: relative;
+  padding: 32px 28px 28px;
+  text-align: center;
+  border: 12px solid transparent;
+  border-radius: 20px;
+  /* Truco: el fondo crema va adentro (padding-box) y las rayas
+     rojas y azules quedan solo en el borde (border-box) */
+  background:
+    linear-gradient(var(--papel), var(--papel)) padding-box,
+    repeating-linear-gradient(-45deg, var(--tomate) 0 14px, var(--papel) 14px 28px, var(--marino) 28px 42px, var(--papel) 42px 56px) border-box;
+  background-size: auto, 79px 79px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  /* Entra subiendo al cargar + las rayas del borde avanzan */
+  animation: entrar 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.3) both, rayas 3s linear infinite;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(40px) rotate(-2deg);
+  }
+}
+
+@keyframes rayas {
+  to {
+    background-position: 0 0, 79px 0;
+  }
+}
+
+/* Sello postal "VÍA AÉREA" en la esquina, girando de a poco */
+main::after {
+  content: 'VÍA ✈ AÉREA';
+  position: absolute;
+  top: -26px;
+  right: -22px;
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border-radius: 50%;
+  border: 3px double var(--tomate);
+  background: var(--papel);
+  color: var(--tomate);
+  font: 700 11px/1.2 'Space Mono', monospace;
+  text-align: center;
+  transform: rotate(14deg);
+  animation: sello 6s ease-in-out infinite;
+}
+
+@keyframes sello {
+  50% {
+    transform: rotate(-8deg) scale(1.05);
+  }
+}
+
+/* ---------- Títulos ---------- */
+h1 {
+  margin: 0 0 20px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(30px, 7vw, 42px);
+  line-height: 1;
+  color: var(--tinta);
+}
+
+h2 {
+  margin: 28px 0 10px;
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+}
+
+/* ---------- Barra de jugador y puntaje (tipo ticket) ---------- */
+.puntaje {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--tinta);
+  color: var(--papel);
+  font-size: 16px;
+}
+
+.puntaje strong {
+  font-family: 'Space Mono', monospace;
+  color: var(--mostaza);
+  font-size: 18px;
+}
+
+/* ---------- Timer ---------- */
+.timer {
+  display: inline-block;
+  margin: 18px 0 14px;
+  padding: 6px 22px;
+  border-radius: 999px;
+  background: var(--mostaza);
+  font: 700 26px 'Space Mono', monospace;
+  box-shadow: 3px 3px 0 var(--tinta);
+}
+
+/* Últimos 5 segundos: rojo, late y tira "ondas" */
+.timer.urgente {
+  background: var(--tomate);
+  color: white;
+  animation: latido 1s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0% {
+    transform: scale(1);
+    box-shadow: 3px 3px 0 var(--tinta), 0 0 0 0 rgba(228, 87, 46, 0.6);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 3px 3px 0 var(--tinta), 0 0 0 18px rgba(228, 87, 46, 0);
+  }
+}
+
+/* ---------- La bandera: postal que se balancea ---------- */
+.bandera {
+  display: block;
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 12px 24px rgba(19, 35, 58, 0.3);
+  transform-origin: top center;
+  animation: balanceo 5s ease-in-out infinite;
+}
+
+@keyframes balanceo {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+
+/* Mensaje de acierto / error */
+.mensaje {
+  min-height: 24px;
+  margin: 18px 0 6px;
+  font-weight: 700;
+}
+
+/* ---------- Formularios ---------- */
+/* Los elementos del form se acomodan solos y centrados */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* La pista ocupa toda la fila */
+.pista {
+  flex-basis: 100%;
+  margin: 0 0 4px;
+  font: 700 22px 'Space Mono', monospace;
+  letter-spacing: 2px;
+  color: var(--marino);
+}
+
+input,
+select {
+  flex: 1 1 200px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--tinta);
+  background: white;
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+/* Al escribir, el input "salta" con una sombra amarilla */
+input:focus,
+select:focus {
+  outline: none;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--mostaza);
+}
+
+/* ---------- Botones (estilo sello con sombra dura) ---------- */
+button {
+  padding: 12px 20px;
+  font: 700 16px 'Space Grotesk', sans-serif;
+  color: white;
+  background: var(--tomate);
+  border: 2px solid var(--tinta);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--tinta);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--tinta);
+}
+
+/* Al apretar, el botón se "hunde" */
+button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--tinta);
+}
+
+/* Botón de pista (type="button") en amarillo */
+form button[type='button'] {
+  background: var(--mostaza);
+  color: var(--tinta);
+}
+
+/* Botones de abajo de la partida (reiniciar / terminar): más discretos */
+main > div > button {
+  margin: 22px 6px 0;
+  padding: 8px 14px;
+  font-size: 14px;
+  background: var(--papel);
+  color: var(--tinta);
+}
+
+/* ---------- Opciones de capitales ---------- */
+.opciones p {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.opciones button {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  background: white;
+  color: var(--tinta);
+  /* Cada botón entra deslizándose (se repite con cada país nuevo) */
+  animation: deslizar 0.4s ease-out both;
+}
+
+.opciones button:hover {
+  background: var(--verde);
+  color: white;
+}
+
+/* Entran uno después del otro */
+.opciones button:nth-of-type(2) {
+  animation-delay: 0.08s;
+}
+.opciones button:nth-of-type(3) {
+  animation-delay: 0.16s;
+}
+
+@keyframes deslizar {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* ---------- Ranking ---------- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+td {
+  padding: 10px 14px;
+  background: white;
+  font-weight: 600;
+}
+
+/* Puntas redondeadas de cada fila */
+td:first-child {
+  border-radius: 10px 0 0 10px;
+  font-family: 'Space Mono', monospace;
+  color: var(--tomate);
+}
+td:last-child {
+  border-radius: 0 10px 10px 0;
+  font-family: 'Space Mono', monospace;
+}
+
+/* Las filas aparecen escalonadas */
+tr {
+  animation: deslizar 0.4s ease-out both;
+}
+tr:nth-child(2) { animation-delay: 0.05s; }
+tr:nth-child(3) { animation-delay: 0.1s; }
+tr:nth-child(4) { animation-delay: 0.15s; }
+tr:nth-child(5) { animation-delay: 0.2s; }
+
+/* Primer puesto en dorado */
+tr:first-child td {
+  background: var(--mostaza);
+}
+
+/* ---------- Celular: sello más chico ---------- */
+@media (max-width: 480px) {
+  main {
+    padding: 28px 16px 20px;
+  }
+  main::after {
+    width: 66px;
+    height: 66px;
+    font-size: 9px;
+    top: -20px;
+    right: -14px;
+  }
+}
+
+/* Si la persona tiene desactivadas las animaciones en su sistema, las respetamos */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  body {
+    animation: none !important;
+    transition: none !important;
+  }
 }
